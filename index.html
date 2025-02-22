@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculateur Course & Natation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 50px;
+        background-color: #041633;
+        color: white;
+      }
+      input {
+        padding: 5px;
+        font-size: 16px;
+        margin: 5px;
+        width: 100px;
+      }
+      .section {
+        border-top: 2px solid #000;
+        margin-top: 20px;
+        padding-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Calculateur Course</h2>
+    <label
+      >Temps (hh:mm:ss) :
+      <input type="text" id="run_time" placeholder="00:00:00" /></label
+    ><br />
+    <label
+      >Distance (km) :
+      <input type="number" id="run_distance" step="0.01" /></label
+    ><br />
+    <label
+      >Allure (min/km) :
+      <input type="text" id="run_pace" placeholder="00:00" /></label
+    ><br />
+    <label>Vitesse (km/h) : <input type="text" id="run_speed" disabled /></label
+    ><br />
+
+    <div class="section">
+      <h2>Calculateur Natation</h2>
+      <label
+        >Temps (hh:mm:ss) :
+        <input type="text" id="swim_time" placeholder="00:00:00" /></label
+      ><br />
+      <label
+        >Distance (m) :
+        <input type="number" id="swim_distance" step="1" /></label
+      ><br />
+      <label
+        >Allure (min/100m) :
+        <input type="text" id="swim_pace" placeholder="00:00" /></label
+      ><br />
+    </div>
+
+    <script>
+      function toSeconds(timeStr) {
+        let parts = timeStr.split(":").map(Number);
+        return (parts[0] || 0) * 3600 + (parts[1] || 0) * 60 + (parts[2] || 0);
+      }
+
+      function formatTime(seconds) {
+        let h = Math.floor(seconds / 3600);
+        let m = Math.floor((seconds % 3600) / 60);
+        let s = Math.floor(seconds % 60);
+        return `${String(h).padStart(2, "0")}:${String(m).padStart(
+          2,
+          "0"
+        )}:${String(s).padStart(2, "0")}`;
+      }
+
+      function formatPace(secondsPer100m) {
+        let m = Math.floor(secondsPer100m / 60);
+        let s = Math.floor(secondsPer100m % 60);
+        return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      }
+
+      function updateRunValues() {
+        let timeInput = document.getElementById("run_time").value;
+        let distance = parseFloat(
+          document.getElementById("run_distance").value
+        );
+        let paceInput = document.getElementById("run_pace").value;
+
+        let timeInSeconds = toSeconds(timeInput);
+        let paceInSeconds = toSeconds("00:" + paceInput);
+
+        if (distance && paceInput) {
+          timeInSeconds = paceInSeconds * distance;
+          document.getElementById("run_time").value = formatTime(timeInSeconds);
+        }
+
+        if (timeInSeconds && distance) {
+          paceInSeconds = timeInSeconds / distance;
+          document.getElementById("run_pace").value = formatPace(paceInSeconds);
+        }
+
+        if (paceInSeconds) {
+          document.getElementById("run_speed").value =
+            (3600 / paceInSeconds).toFixed(2) + " km/h";
+        }
+      }
+
+      function updateSwimValues() {
+        let timeInput = document.getElementById("swim_time").value;
+        let distance = parseFloat(
+          document.getElementById("swim_distance").value
+        );
+        let paceInput = document.getElementById("swim_pace").value;
+
+        let timeInSeconds = toSeconds(timeInput);
+        let paceInSeconds = toSeconds("00:" + paceInput);
+
+        if (distance && paceInput) {
+          timeInSeconds = (paceInSeconds / 100) * distance;
+          document.getElementById("swim_time").value =
+            formatTime(timeInSeconds);
+        }
+
+        if (timeInSeconds && distance) {
+          paceInSeconds = (timeInSeconds / distance) * 100;
+          document.getElementById("swim_pace").value =
+            formatPace(paceInSeconds);
+        }
+      }
+
+      document
+        .querySelectorAll("#run_time, #run_distance, #run_pace")
+        .forEach((input) => {
+          input.addEventListener("input", updateRunValues);
+        });
+
+      document
+        .querySelectorAll("#swim_time, #swim_distance, #swim_pace")
+        .forEach((input) => {
+          input.addEventListener("input", updateSwimValues);
+        });
+    </script>
+  </body>
+</html>
