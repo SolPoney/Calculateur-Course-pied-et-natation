@@ -12,56 +12,298 @@
         background-color: #041633;
         color: white;
       }
-      input {
-        padding: 5px;
-        font-size: 16px;
-        margin: 5px;
-        width: 100px;
+      /* Header */
+      .site-header {
+        background: linear-gradient(90deg, #073b6b, #0b2a4a);
+        padding: 24px 16px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+        margin-bottom: 24px;
       }
-      .section {
-        border-top: 2px solid #000;
-        margin-top: 20px;
-        padding-top: 20px;
+      .site-header h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: 0.6px;
+      }
+      .site-header .tagline {
+        margin: 6px 0 0 0;
+        font-size: 14px;
+        color: #c9e6ff;
+      }
+
+      /* Layout: calculators in a responsive grid */
+      .calculators {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        justify-items: center;
+        align-items: start;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 18px;
+        border-radius: 10px;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: 0 6px 12px rgba(2, 6, 23, 0.6);
+        text-align: left;
+      }
+      .card h3 {
+        margin-top: 0;
+        color: #e8f6ff;
+        text-align: center;
+      }
+      input {
+        padding: 6px 8px;
+        font-size: 15px;
+        margin: 6px 0;
+        width: 140px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.03);
+        color: white;
+      }
+      label {
+        display: block;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      @media (max-width: 900px) {
+        .calculators {
+          flex-direction: column;
+          gap: 14px;
+        }
+        .card {
+          width: auto;
+        }
+        body {
+          margin: 20px;
+        }
+      }
+
+      /* Footer */
+      .site-footer {
+        margin-top: 28px;
+        background: linear-gradient(
+          90deg,
+          rgba(7, 59, 107, 0.18),
+          rgba(11, 42, 74, 0.12)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        padding: 14px 12px;
+        border-radius: 8px;
+        color: #c7ddff;
+        font-size: 13px;
+      }
+      .site-footer a {
+        color: #e6f6ff;
+        text-decoration: none;
       }
     </style>
   </head>
   <body>
-    <h2>Calculateur Course</h2>
-    <label
-      >Temps (hh:mm:ss) :
-      <input id="run_time" placeholder="00:00:00" type="time" step="1" /></label
-    ><br />
-    <label
-      >Distance (km) :
-      <input type="number" id="run_distance" step="0.01" /></label
-    ><br />
-    <label
-      >Allure (min/km) :
-      <input type="text" id="run_pace" placeholder="00:00" /></label
-    ><br />
-    <label>Vitesse (km/h) : <input type="text" id="run_speed" disabled /></label
-    ><br />
+    <header class="site-header">
+      <h1>Calculateur Course & Natation & Triathlon</h1>
+      <p class="tagline">Rapide — Simple — Fiable</p>
+    </header>
 
-    <div class="section">
-      <h2>Calculateur Natation</h2>
-      <label
-        >Temps (hh:mm:ss) :
-        <input type="time" id="swim_time" placeholder="00:00:00" step="1"/></label
-      ><br />
-      <label
-        >Distance (m) :
-        <input type="number" id="swim_distance" step="1" /></label
-      ><br />
-      <label
-        >Allure (min/100m) :
-        <input type="text" id="swim_pace" placeholder="00:00" /></label
-      ><br />
+    <div class="calculators">
+      <div class="card" id="card-run">
+        <h3>Course à pied</h3>
+        <label
+          >Temps (hh:mm:ss) :
+          <input
+            id="run_time"
+            placeholder="00:00:00"
+            type="text"
+            pattern="\\d{1,2}(:\\d{2}){1,2}"
+            inputmode="numeric"
+          />
+        </label>
+        <div class="row">
+          <label style="flex: 1"
+            >Distance (km) :
+            <input type="number" id="run_distance" step="0.01" />
+          </label>
+          <label style="flex: 1"
+            >Allure (min/km) :
+            <input type="text" id="run_pace" placeholder="00:00" />
+          </label>
+        </div>
+        <label
+          >Vitesse (km/h) : <input type="text" id="run_speed" readonly
+        /></label>
+      </div>
+
+      <div class="card" id="card-bike">
+        <h3>Cyclisme</h3>
+        <label
+          >Temps (hh:mm:ss) :
+          <input
+            id="bike_time"
+            placeholder="00:00:00"
+            type="text"
+            pattern="\\d{1,2}(:\\d{2}){1,2}"
+            inputmode="numeric"
+          />
+        </label>
+        <div class="row">
+          <label style="flex: 1"
+            >Distance (km) :
+            <input type="number" id="bike_distance" step="0.1" />
+          </label>
+          <label style="flex: 1"
+            >Vitesse (km/h) :
+            <input type="text" id="bike_speed" placeholder="00.00" />
+          </label>
+        </div>
+      </div>
+
+      <div class="card" id="card-tri">
+        <h3>Triathlon</h3>
+        <label
+          >Format :
+          <select id="tri_format">
+            <option value="custom">Personnalisé</option>
+            <option value="xs">XS (Super-sprint)</option>
+            <option value="s">S (Sprint)</option>
+            <option value="m">M (Olympique)</option>
+            <option value="l">L (Half)</option>
+            <option value="xl">XL (Long)</option>
+            <option value="ironman">Ironman</option>
+          </select>
+        </label>
+
+        <h4 style="margin-top: 10px">Natation</h4>
+        <label
+          >Temps (hh:mm:ss) :
+          <input id="tri_swim_time" type="text" placeholder="00:00:00"
+        /></label>
+        <div class="row">
+          <label style="flex: 1"
+            >Distance (m) :
+            <input id="tri_swim_distance" type="number" step="1"
+          /></label>
+          <label style="flex: 1"
+            >Allure (min/100m) :
+            <input id="tri_swim_pace" type="text" placeholder="00:00" readonly
+          /></label>
+        </div>
+
+        <h4 style="margin-top: 10px">Cyclisme</h4>
+        <label
+          >Temps (hh:mm:ss) :
+          <input id="tri_bike_time" type="text" placeholder="00:00:00"
+        /></label>
+        <div class="row">
+          <label style="flex: 1"
+            >Distance (km) :
+            <input id="tri_bike_distance" type="number" step="0.1"
+          /></label>
+          <label style="flex: 1"
+            >Vitesse (km/h) :
+            <input id="tri_bike_speed" type="text" placeholder="" readonly
+          /></label>
+        </div>
+
+        <h4 style="margin-top: 10px">Course</h4>
+        <label
+          >Temps (hh:mm:ss) :
+          <input id="tri_run_time" type="text" placeholder="00:00:00"
+        /></label>
+        <div class="row">
+          <label style="flex: 1"
+            >Distance (km) :
+            <input id="tri_run_distance" type="number" step="0.01"
+          /></label>
+          <label style="flex: 1"
+            >Allure (min/km) :
+            <input id="tri_run_pace" type="text" placeholder="00:00" readonly
+          /></label>
+        </div>
+
+        <h4 style="margin-top: 10px">Transitions</h4>
+        <div class="row">
+          <label style="flex: 1"
+            >T1 (mm:ss ou hh:mm:ss) :
+            <input id="tri_t1" type="text" placeholder="00:01:30"
+          /></label>
+          <label style="flex: 1"
+            >T2 (mm:ss ou hh:mm:ss) :
+            <input id="tri_t2" type="text" placeholder="00:01:00"
+          /></label>
+        </div>
+
+        <label style="margin-top: 10px"
+          >Temps total : <input id="tri_total_time" type="text" readonly
+        /></label>
+      </div>
+
+      <div class="card" id="card-swim">
+        <h3>Natation</h3>
+        <label
+          >Temps (hh:mm:ss) :
+          <input
+            type="text"
+            id="swim_time"
+            placeholder="00:00:00"
+            pattern="\\d{1,2}(:\\d{2}){1,2}"
+            inputmode="numeric"
+          />
+        </label>
+        <div class="row">
+          <label style="flex: 1"
+            >Distance (m) :
+            <input type="number" id="swim_distance" step="1" />
+          </label>
+          <label style="flex: 1"
+            >Allure (min/100m) :
+            <input type="text" id="swim_pace" placeholder="00:00" />
+          </label>
+        </div>
+      </div>
     </div>
 
     <script>
       function toSeconds(timeStr) {
-        let parts = timeStr.split(":").map(Number);
-        return (parts[0] || 0) * 3600 + (parts[1] || 0) * 60 + (parts[2] || 0);
+        if (!timeStr || typeof timeStr !== "string") return 0;
+
+        // Try to extract all numbers (works for formats like "12h34min45", "4m30s", "12:34:45", "04:30")
+        const nums = timeStr.match(/\d+/g);
+        if (nums && nums.length > 0) {
+          if (nums.length === 3) {
+            return (
+              Number(nums[0]) * 3600 + Number(nums[1]) * 60 + Number(nums[2])
+            );
+          }
+          if (nums.length === 2) {
+            return Number(nums[0]) * 60 + Number(nums[1]);
+          }
+          // single number: try to guess unit from letters, default to seconds
+          const n = Number(nums[0]);
+          if (/[hH]/.test(timeStr)) return n * 3600;
+          if (/[mM]/.test(timeStr) && /s|S/.test(timeStr) === false)
+            return n * 60;
+          return n;
+        }
+
+        // Fallback: colon separated values
+        let parts = timeStr.split(":").map((p) => (p === "" ? 0 : Number(p)));
+        if (parts.length === 3) {
+          return (
+            (parts[0] || 0) * 3600 + (parts[1] || 0) * 60 + (parts[2] || 0)
+          );
+        }
+        if (parts.length === 2) {
+          return (parts[0] || 0) * 60 + (parts[1] || 0);
+        }
+        return parts[0] || 0;
       }
 
       function formatTime(seconds) {
@@ -74,58 +316,248 @@
         )}:${String(s).padStart(2, "0")}`;
       }
 
-      function formatPace(secondsPer100m) {
-        let m = Math.floor(secondsPer100m / 60);
-        let s = Math.floor(secondsPer100m % 60);
+      function formatPace(seconds) {
+        seconds = Math.round(Number(seconds) || 0);
+        let m = Math.floor(seconds / 60);
+        let s = seconds % 60;
         return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
       }
 
-      function updateRunValues() {
-        let timeInput = document.getElementById("run_time").value;
+      function updateRunValues(e) {
+        const source = e && e.target && e.target.id;
+        let timeInput = document.getElementById("run_time").value.trim();
         let distance = parseFloat(
           document.getElementById("run_distance").value
         );
-        let paceInput = document.getElementById("run_pace").value;
+        let paceInput = document.getElementById("run_pace").value.trim();
 
         let timeInSeconds = toSeconds(timeInput);
-        let paceInSeconds = toSeconds("00:" + paceInput);
+        let paceInSeconds = paceInput ? toSeconds(paceInput) : null;
 
-        if (distance && paceInput) {
+        // Compute total time ONLY when a pace is provided and the change comes from pace or distance
+        if (
+          isFinite(distance) &&
+          distance > 0 &&
+          paceInput &&
+          paceInSeconds > 0 &&
+          (source === "run_pace" || source === "run_distance")
+        ) {
           timeInSeconds = paceInSeconds * distance;
           document.getElementById("run_time").value = formatTime(timeInSeconds);
         }
 
-        if (timeInSeconds && distance) {
+        // Compute pace when we have time + distance and the change comes from time or distance
+        if (
+          timeInSeconds > 0 &&
+          isFinite(distance) &&
+          distance > 0 &&
+          (source === "run_time" || source === "run_distance")
+        ) {
           paceInSeconds = timeInSeconds / distance;
           document.getElementById("run_pace").value = formatPace(paceInSeconds);
         }
 
-        if (paceInSeconds) {
+        // Update speed when we have a valid pace (sec per km)
+        if (paceInSeconds && paceInSeconds > 0) {
           document.getElementById("run_speed").value =
             (3600 / paceInSeconds).toFixed(2) + " km/h";
+        } else {
+          document.getElementById("run_speed").value = "";
         }
       }
 
-      function updateSwimValues() {
-        let timeInput = document.getElementById("swim_time").value;
+      function updateSwimValues(e) {
+        const source = e && e.target && e.target.id;
+        let timeInput = document.getElementById("swim_time").value.trim();
         let distance = parseFloat(
           document.getElementById("swim_distance").value
         );
-        let paceInput = document.getElementById("swim_pace").value;
+        let paceInput = document.getElementById("swim_pace").value.trim();
 
         let timeInSeconds = toSeconds(timeInput);
-        let paceInSeconds = toSeconds("00:" + paceInput);
+        // paceInput for swim is expected as mm:ss per 100m
+        let paceInSeconds = paceInput ? toSeconds(paceInput) : null;
 
-        if (distance && paceInput) {
+        // distance in meters: compute total time only if pace provided and change from pace or distance
+        if (
+          isFinite(distance) &&
+          distance > 0 &&
+          paceInput &&
+          paceInSeconds > 0 &&
+          (source === "swim_pace" || source === "swim_distance")
+        ) {
           timeInSeconds = (paceInSeconds / 100) * distance;
           document.getElementById("swim_time").value =
             formatTime(timeInSeconds);
         }
 
-        if (timeInSeconds && distance) {
+        // Compute pace when we have time + distance and change from time or distance
+        if (
+          timeInSeconds > 0 &&
+          isFinite(distance) &&
+          distance > 0 &&
+          (source === "swim_time" || source === "swim_distance")
+        ) {
           paceInSeconds = (timeInSeconds / distance) * 100;
           document.getElementById("swim_pace").value =
             formatPace(paceInSeconds);
+        }
+      }
+
+      function updateBikeValues(e) {
+        const source = e && e.target && e.target.id;
+        let timeInput = document.getElementById("bike_time").value.trim();
+        let distance = parseFloat(
+          document.getElementById("bike_distance").value
+        );
+        let speedInput = document.getElementById("bike_speed").value.trim();
+
+        let timeInSeconds = toSeconds(timeInput);
+        let speedKmh = speedInput ? parseFloat(speedInput) : null;
+
+        // Compute total time ONLY when speed is provided and change comes from speed or distance
+        if (
+          isFinite(distance) &&
+          distance > 0 &&
+          speedInput &&
+          isFinite(speedKmh) &&
+          speedKmh > 0 &&
+          (source === "bike_speed" || source === "bike_distance")
+        ) {
+          timeInSeconds = (distance / speedKmh) * 3600;
+          document.getElementById("bike_time").value =
+            formatTime(timeInSeconds);
+        }
+
+        // Compute speed when we have time + distance and change comes from time or distance
+        if (
+          timeInSeconds > 0 &&
+          isFinite(distance) &&
+          distance > 0 &&
+          (source === "bike_time" || source === "bike_distance")
+        ) {
+          speedKmh = distance / (timeInSeconds / 3600);
+          document.getElementById("bike_speed").value = speedKmh.toFixed(2);
+        }
+      }
+
+      document
+        .querySelectorAll("#bike_time, #bike_distance, #bike_speed")
+        .forEach((input) => {
+          input.addEventListener("input", updateBikeValues);
+        });
+
+      document
+        .getElementById("bike_time")
+        .addEventListener("blur", function () {
+          const v = this.value.trim();
+          const s = toSeconds(v);
+          if (s > 0) this.value = formatTime(s);
+        });
+
+      // Triathlon logic
+      const TRI_PRESETS = {
+        xs: { swim_m: 400, bike_km: 10, run_km: 2.5 },
+        s: { swim_m: 750, bike_km: 20, run_km: 5 },
+        m: { swim_m: 1500, bike_km: 40, run_km: 10 },
+        l: { swim_m: 1900, bike_km: 90, run_km: 21.1 },
+        xl: { swim_m: 3000, bike_km: 120, run_km: 30 },
+        ironman: { swim_m: 3800, bike_km: 180, run_km: 42.195 },
+      };
+
+      function applyTriPreset(key) {
+        const p = TRI_PRESETS[key];
+        if (!p) return;
+        document.getElementById("tri_swim_distance").value = p.swim_m;
+        document.getElementById("tri_bike_distance").value = p.bike_km;
+        document.getElementById("tri_run_distance").value = p.run_km;
+        // clear times/outputs so user fills them
+        document.getElementById("tri_swim_time").value = "";
+        document.getElementById("tri_bike_time").value = "";
+        document.getElementById("tri_run_time").value = "";
+        document.getElementById("tri_swim_pace").value = "";
+        document.getElementById("tri_bike_speed").value = "";
+        document.getElementById("tri_run_pace").value = "";
+        document.getElementById("tri_total_time").value = "";
+      }
+
+      function updateTriValues(e) {
+        const source = e && e.target && e.target.id;
+        const swimTimeStr = document
+          .getElementById("tri_swim_time")
+          .value.trim();
+        const bikeTimeStr = document
+          .getElementById("tri_bike_time")
+          .value.trim();
+        const runTimeStr = document.getElementById("tri_run_time").value.trim();
+        const t1Str = document.getElementById("tri_t1").value.trim();
+        const t2Str = document.getElementById("tri_t2").value.trim();
+
+        const swimDist = parseFloat(
+          document.getElementById("tri_swim_distance").value
+        );
+        const bikeDist = parseFloat(
+          document.getElementById("tri_bike_distance").value
+        );
+        const runDist = parseFloat(
+          document.getElementById("tri_run_distance").value
+        );
+
+        const swimSec = toSeconds(swimTimeStr);
+        const bikeSec = toSeconds(bikeTimeStr);
+        const runSec = toSeconds(runTimeStr);
+        const t1Sec = toSeconds(t1Str);
+        const t2Sec = toSeconds(t2Str);
+
+        // Swim pace (per 100m) if swimSec and swimDist
+        if (swimSec > 0 && isFinite(swimDist) && swimDist > 0) {
+          const pace100 = (swimSec / swimDist) * 100;
+          document.getElementById("tri_swim_pace").value = formatPace(pace100);
+        } else if (source === "tri_swim_time") {
+          // if user edits time but no distance, don't overwrite
+        }
+
+        // Bike speed km/h if bikeSec and bikeDist
+        if (bikeSec > 0 && isFinite(bikeDist) && bikeDist > 0) {
+          const speed = bikeDist / (bikeSec / 3600);
+          document.getElementById("tri_bike_speed").value =
+            speed.toFixed(2) + " km/h";
+        }
+
+        // Run pace min/km if runSec and runDist
+        if (runSec > 0 && isFinite(runDist) && runDist > 0) {
+          const paceKm = runSec / runDist; // seconds per km
+          document.getElementById("tri_run_pace").value = formatPace(paceKm);
+        }
+
+        // Total time: sum available discipline times + transitions
+        let total = 0;
+        let any = false;
+        if (swimSec > 0) {
+          total += swimSec;
+          any = true;
+        }
+        if (t1Sec > 0) {
+          total += t1Sec;
+          any = true;
+        }
+        if (bikeSec > 0) {
+          total += bikeSec;
+          any = true;
+        }
+        if (t2Sec > 0) {
+          total += t2Sec;
+          any = true;
+        }
+        if (runSec > 0) {
+          total += runSec;
+          any = true;
+        }
+
+        if (any) {
+          document.getElementById("tri_total_time").value = formatTime(total);
+        } else {
+          document.getElementById("tri_total_time").value = "";
         }
       }
 
@@ -135,11 +567,54 @@
           input.addEventListener("input", updateRunValues);
         });
 
+      // Format time fields when user leaves the input (only if parsable)
+      document.getElementById("run_time").addEventListener("blur", function () {
+        const v = this.value.trim();
+        const s = toSeconds(v);
+        if (s > 0) this.value = formatTime(s);
+      });
+
       document
         .querySelectorAll("#swim_time, #swim_distance, #swim_pace")
         .forEach((input) => {
           input.addEventListener("input", updateSwimValues);
         });
+
+      document
+        .getElementById("swim_time")
+        .addEventListener("blur", function () {
+          const v = this.value.trim();
+          const s = toSeconds(v);
+          if (s > 0) this.value = formatTime(s);
+        });
+
+      // Set footer year if footer present
+      const yearEl = document.getElementById("year");
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
     </script>
+
+    <footer class="site-footer">
+      <div
+        style="
+          max-width: 1100px;
+          margin: 0 auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+          flex-wrap: wrap;
+        "
+      >
+        <div>
+          <strong>Calculateur Course & Natation</strong>
+          <div style="font-size: 13px; color: #c7ddff">
+            Triathlon inclus — créé pour un usage rapide
+          </div>
+        </div>
+        <div style="font-size: 13px; color: #c7ddff">
+          &copy; <span id="year"></span> SolPoney
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
