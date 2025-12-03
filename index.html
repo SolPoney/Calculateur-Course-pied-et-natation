@@ -192,7 +192,7 @@
           /></label>
           <label style="flex: 1"
             >Allure (min/100m) :
-            <input id="tri_swim_pace" type="text" placeholder="00:00" readonly
+            <input id="tri_swim_pace" type="text" placeholder="00:00"
           /></label>
         </div>
 
@@ -208,7 +208,7 @@
           /></label>
           <label style="flex: 1"
             >Vitesse (km/h) :
-            <input id="tri_bike_speed" type="text" placeholder="" readonly
+            <input id="tri_bike_speed" type="text" placeholder="00.00"
           /></label>
         </div>
 
@@ -224,7 +224,7 @@
           /></label>
           <label style="flex: 1"
             >Allure (min/km) :
-            <input id="tri_run_pace" type="text" placeholder="00:00" readonly
+            <input id="tri_run_pace" type="text" placeholder="00:00"
           /></label>
         </div>
 
@@ -490,6 +490,13 @@
           .getElementById("tri_bike_time")
           .value.trim();
         const runTimeStr = document.getElementById("tri_run_time").value.trim();
+        const swimPaceStr = document
+          .getElementById("tri_swim_pace")
+          .value.trim();
+        const bikeSpdStr = document
+          .getElementById("tri_bike_speed")
+          .value.trim();
+        const runPaceStr = document.getElementById("tri_run_pace").value.trim();
         const t1Str = document.getElementById("tri_t1").value.trim();
         const t2Str = document.getElementById("tri_t2").value.trim();
 
@@ -503,31 +510,84 @@
           document.getElementById("tri_run_distance").value
         );
 
-        const swimSec = toSeconds(swimTimeStr);
-        const bikeSec = toSeconds(bikeTimeStr);
-        const runSec = toSeconds(runTimeStr);
+        let swimSec = toSeconds(swimTimeStr);
+        let bikeSec = toSeconds(bikeTimeStr);
+        let runSec = toSeconds(runTimeStr);
         const t1Sec = toSeconds(t1Str);
         const t2Sec = toSeconds(t2Str);
 
-        // Swim pace (per 100m) if swimSec and swimDist
-        if (swimSec > 0 && isFinite(swimDist) && swimDist > 0) {
-          const pace100 = (swimSec / swimDist) * 100;
-          document.getElementById("tri_swim_pace").value = formatPace(pace100);
-        } else if (source === "tri_swim_time") {
-          // if user edits time but no distance, don't overwrite
+        let swimPaceSec = swimPaceStr ? toSeconds(swimPaceStr) : null;
+        let bikeSpdKmh = bikeSpdStr ? parseFloat(bikeSpdStr) : null;
+        let runPaceSec = runPaceStr ? toSeconds(runPaceStr) : null;
+
+        // === SWIM ===
+        // If pace+distance provided and source is pace/distance, compute time
+        if (
+          isFinite(swimDist) &&
+          swimDist > 0 &&
+          swimPaceSec > 0 &&
+          (source === "tri_swim_pace" || source === "tri_swim_distance")
+        ) {
+          swimSec = (swimPaceSec / 100) * swimDist;
+          document.getElementById("tri_swim_time").value = formatTime(swimSec);
+        }
+        // If time+distance provided and source is time/distance, compute pace
+        if (
+          swimSec > 0 &&
+          isFinite(swimDist) &&
+          swimDist > 0 &&
+          (source === "tri_swim_time" || source === "tri_swim_distance")
+        ) {
+          swimPaceSec = (swimSec / swimDist) * 100;
+          document.getElementById("tri_swim_pace").value =
+            formatPace(swimPaceSec);
         }
 
-        // Bike speed km/h if bikeSec and bikeDist
-        if (bikeSec > 0 && isFinite(bikeDist) && bikeDist > 0) {
-          const speed = bikeDist / (bikeSec / 3600);
+        // === BIKE ===
+        // If speed+distance provided and source is speed/distance, compute time
+        if (
+          isFinite(bikeDist) &&
+          bikeDist > 0 &&
+          isFinite(bikeSpdKmh) &&
+          bikeSpdKmh > 0 &&
+          (source === "tri_bike_speed" || source === "tri_bike_distance")
+        ) {
+          bikeSec = (bikeDist / bikeSpdKmh) * 3600;
+          document.getElementById("tri_bike_time").value = formatTime(bikeSec);
+        }
+        // If time+distance provided and source is time/distance, compute speed
+        if (
+          bikeSec > 0 &&
+          isFinite(bikeDist) &&
+          bikeDist > 0 &&
+          (source === "tri_bike_time" || source === "tri_bike_distance")
+        ) {
+          bikeSpdKmh = bikeDist / (bikeSec / 3600);
           document.getElementById("tri_bike_speed").value =
-            speed.toFixed(2) + " km/h";
+            bikeSpdKmh.toFixed(2);
         }
 
-        // Run pace min/km if runSec and runDist
-        if (runSec > 0 && isFinite(runDist) && runDist > 0) {
-          const paceKm = runSec / runDist; // seconds per km
-          document.getElementById("tri_run_pace").value = formatPace(paceKm);
+        // === RUN ===
+        // If pace+distance provided and source is pace/distance, compute time
+        if (
+          isFinite(runDist) &&
+          runDist > 0 &&
+          runPaceSec > 0 &&
+          (source === "tri_run_pace" || source === "tri_run_distance")
+        ) {
+          runSec = runPaceSec * runDist;
+          document.getElementById("tri_run_time").value = formatTime(runSec);
+        }
+        // If time+distance provided and source is time/distance, compute pace
+        if (
+          runSec > 0 &&
+          isFinite(runDist) &&
+          runDist > 0 &&
+          (source === "tri_run_time" || source === "tri_run_distance")
+        ) {
+          runPaceSec = runSec / runDist;
+          document.getElementById("tri_run_pace").value =
+            formatPace(runPaceSec);
         }
 
         // Total time: sum available discipline times + transitions
@@ -587,6 +647,48 @@
           const s = toSeconds(v);
           if (s > 0) this.value = formatTime(s);
         });
+
+      // Triathlon bindings
+      document
+        .getElementById("tri_format")
+        .addEventListener("change", function (e) {
+          const val = e.target.value;
+          if (val && val !== "custom") applyTriPreset(val);
+        });
+
+      [
+        "tri_swim_time",
+        "tri_swim_distance",
+        "tri_swim_pace",
+        "tri_bike_time",
+        "tri_bike_distance",
+        "tri_bike_speed",
+        "tri_run_time",
+        "tri_run_distance",
+        "tri_run_pace",
+        "tri_t1",
+        "tri_t2",
+      ].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", updateTriValues);
+      });
+
+      [
+        "tri_swim_time",
+        "tri_bike_time",
+        "tri_run_time",
+        "tri_t1",
+        "tri_t2",
+      ].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("blur", function () {
+          const v = this.value.trim();
+          const s = toSeconds(v);
+          if (s > 0) this.value = formatTime(s);
+        });
+      });
 
       // Set footer year if footer present
       const yearEl = document.getElementById("year");
